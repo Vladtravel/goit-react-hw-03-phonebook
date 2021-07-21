@@ -3,18 +3,29 @@ import shortid from "shortid";
 import ContactForm from "./components/ContactForm";
 import ContactsList from "./components/ContactsList";
 import Filter from "./components/Filter";
-import styles from "./App.css";
+import styles from "./App.module.css";
 
 class App extends React.Component {
   state = {
-    contacts: [
-      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-      { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
-    ],
+    contacts: [],
     filter: "",
   };
+
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem("contacts"));
+    if (contacts) {
+      this.setState({
+        contacts: contacts,
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (prevState.contacts !== contacts) {
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+    }
+  }
 
   onDeleteContactClick = (id) => {
     this.setState((prevState) => ({
@@ -55,12 +66,15 @@ class App extends React.Component {
       <div className={styles.container}>
         <h1>Phonebook</h1>
         <ContactForm onSubmit={this.onFormSubmit} />
-        <h2>Contacts</h2>
-        <Filter value={filter} onFilter={this.onFilterInput} />
-        <ContactsList
-          contacts={contacts}
-          onDeleteClick={this.onDeleteContactClick}
-        />
+
+        <>
+          <h2>Contacts</h2>
+          <Filter value={filter} onFilter={this.onFilterInput} />
+          <ContactsList
+            contacts={contacts}
+            onDeleteClick={this.onDeleteContactClick}
+          />
+        </>
       </div>
     );
   }

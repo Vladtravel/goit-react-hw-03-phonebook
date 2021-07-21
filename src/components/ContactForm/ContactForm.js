@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
+import PropTypes from "prop-types"; // ES6
 
-class ContactForm extends Component {
+class ContactForm extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
   };
@@ -12,8 +12,9 @@ class ContactForm extends Component {
   };
 
   onSubmit = (e) => {
+    const { onSubmit } = this.props;
     e.preventDefault();
-    this.props.onSubmit(this.state);
+    onSubmit(this.state);
     this.formReset();
   };
 
